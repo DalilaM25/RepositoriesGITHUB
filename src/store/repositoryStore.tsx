@@ -1,26 +1,17 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { fetchRepositories, Repository } from "../api/getRepositiries";
+import { fromPromise, IPromiseBasedObservable } from "mobx-utils";
 
 class RepositoryStore {
-  repos: Repository[] = [];
+  repos?: IPromiseBasedObservable<Repository[]>;
   page: number = 1;
-  isLoading: boolean = false;
+
   constructor() {
     makeAutoObservable(this);
   }
 
-  getRepos = async () => {
-    try {
-      this.isLoading = true;
-      const res = await fetchRepositories(this.page);
-      runInAction(() => {
-        this.repos = res;
-        this.isLoading = false;
-      });
-    } catch {
-      this.isLoading = false;
-      throw new Error("");
-    }
+  getRepos = () => {
+    this.repos = fromPromise(fetchRepositories(this.page));
   };
 }
 
