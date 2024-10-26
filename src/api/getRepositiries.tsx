@@ -34,6 +34,8 @@ export interface Repository {
   forks_url: string;
   keys_url: string;
   collaborators_url: string;
+  created_at: string;
+  updated_at: string;
   teams_url: string;
   hooks_url: string;
   issue_events_url: string;

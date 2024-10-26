@@ -7,15 +7,22 @@ import RepoPageItem from "./RepoItem";
 
 const ReposList: React.FC = observer(() => {
   const {
-    repos: { getRepos, repos, hasMore },
+    repos: {
+      getRepositories,
+      removeRepositoryByID,
+      repositoryPromises,
+      hasMorePages,
+    },
   } = useStores();
+
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const lastRepoRef = (node: HTMLLIElement) => {
+
+  const lastRepositoryRef = (node: HTMLLIElement) => {
     if (observerRef.current) observerRef.current.disconnect();
 
     observerRef.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore) {
-        getRepos();
+      if (entries[0].isIntersecting && hasMorePages) {
+        getRepositories();
       }
     });
 
@@ -23,20 +30,26 @@ const ReposList: React.FC = observer(() => {
   };
 
   useEffect(() => {
-    getRepos();
+    getRepositories();
   }, []);
 
-  if (!repos?.length) {
+  if (!repositoryPromises?.length) {
     return <div>loading</div>;
   }
 
   return (
     <ul>
-      {repos.map((repoPromise, index) => (
+      {repositoryPromises.map((repoPromise, index) => (
         <RepoPageItem
           key={index}
           repoPromise={repoPromise}
-          lastRepoRef={index === repos.length - 1 ? lastRepoRef : undefined}
+          lastRepositoryRef={
+            index === repositoryPromises.length - 1
+              ? lastRepositoryRef
+              : undefined
+          }
+          onEdit={() => console.log("редактируем")}
+          onDelete={(id) => removeRepositoryByID(id)}
         />
       ))}
     </ul>
