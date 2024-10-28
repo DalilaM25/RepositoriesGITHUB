@@ -5,7 +5,7 @@ import { RepoItem } from "./RepoItem";
 import { Modal } from "./Modal";
 import { RepoForm } from "./RepoForm";
 import { Repository } from "../utils/types";
-import { Button, Spin } from "antd";
+import { Button, Select, Spin } from "antd";
 import styles from "../styles/reposList.module.css";
 
 const ReposList: React.FC = observer(() => {
@@ -18,6 +18,8 @@ const ReposList: React.FC = observer(() => {
       setPage,
       totalPages,
       removeRepositoryByID,
+      filter,
+      setFilter,
     },
   } = useStores();
 
@@ -37,15 +39,15 @@ const ReposList: React.FC = observer(() => {
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    getRepositories();
-  }, []);
+    getRepositories(filter);
+  }, [filter, getRepositories]);
 
   useEffect(() => {
     const handleObserver = (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
       if (target.isIntersecting && !loading && page < totalPages) {
         setPage(page + 1);
-        getRepositories();
+        getRepositories(filter);
       }
     };
 
@@ -67,10 +69,24 @@ const ReposList: React.FC = observer(() => {
         observer.unobserve(currentLoaderRef);
       }
     };
-  }, [getRepositories, loading, page, setPage, totalPages]);
+  }, [filter, getRepositories, loading, page, setPage, totalPages]);
 
   return (
     <>
+      <Select
+        defaultValue="name"
+        className={styles.select}
+        onChange={(value) => {
+          setFilter(value);
+          setPage(1);
+        }}
+      >
+        <Select.Option value="name">По имени</Select.Option>
+        <Select.Option value="createdAt">По дате создания</Select.Option>
+        <Select.Option value="updatedAt">
+          По дате последнего изменения
+        </Select.Option>
+      </Select>
       <div>
         {repositories.map((repo) => (
           <div
