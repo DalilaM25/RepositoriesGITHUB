@@ -1,33 +1,58 @@
 import { observer } from "mobx-react-lite";
-import { IPromiseBasedObservable } from "mobx-utils";
-import { Repository } from "../api/getRepositiries";
-import { RepoInfo } from "./RepoInfo";
+import { Card, Avatar, Typography } from "antd";
+import { Repository } from "../utils/types";
+import styles from "../styles/repoItem.module.css";
 
-export type ItemProps = {
-  repoPromise: IPromiseBasedObservable<Repository[]>;
-  lastRepositoryRef?: (node: HTMLLIElement) => void;
-  onEdit: () => void;
-  onDelete: (id: number) => void;
+const { Title, Paragraph } = Typography;
+
+type RepoItemProps = {
+  repo: Repository;
 };
 
-export const RepoPageItem: React.FC<ItemProps> = observer(
-  ({ repoPromise, lastRepositoryRef, onEdit, onDelete }) => {
-    return repoPromise.case({
-      pending: () => <li>Loading...</li>,
-      rejected: () => <li>Error loading</li>,
-      fulfilled: (data) => (
-        <>
-          {data.map((item) => (
-            <li key={item.id} ref={lastRepositoryRef}>
-              <RepoInfo repo={item}></RepoInfo>
-              <button onClick={onEdit}>🖌</button>
-              <button onClick={() => onDelete(item.id)}>X</button>
-            </li>
-          ))}
-        </>
-      ),
-    });
-  }
-);
+export const RepoItem: React.FC<RepoItemProps> = observer(({ repo }) => {
+  const { owner, name, description, html_url, created_at, updated_at } = repo;
+  const createdDate = new Date(created_at);
+  const updatedDate = new Date(updated_at);
 
-export default RepoPageItem;
+  const formattedCreatedDate = createdDate.toLocaleDateString("ru-RU", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const formattedUpdatedDate = updatedDate.toLocaleDateString("ru-RU", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return (
+    <Card style={{ marginBottom: 16 }}>
+      <Card.Meta
+        avatar={
+          <Avatar
+            src={owner.avatar_url}
+            alt={`Аватар пользователя ${owner.login}`}
+            size={100}
+          />
+        }
+        title={<span className={styles.username}>{owner.login}</span>}
+        description={
+          <>
+            <Title level={4}>{name}</Title>
+            <Paragraph>{description || "Нет описания"}</Paragraph>
+            <Paragraph>
+              Ссылка:{" "}
+              <a href={html_url} target="_blank" rel="noopener noreferrer">
+                {html_url}
+              </a>
+            </Paragraph>
+            <Paragraph>Дата создания: {formattedCreatedDate}</Paragraph>
+            <Paragraph>
+              Дата последнего изменения: {formattedUpdatedDate}
+            </Paragraph>
+          </>
+        }
+      />
+    </Card>
+  );
+});

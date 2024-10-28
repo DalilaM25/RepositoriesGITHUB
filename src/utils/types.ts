@@ -22,7 +22,6 @@ export interface Owner {
 
 export interface Repository {
   id: number;
-  node_id: string;
   name: string;
   full_name: string;
   private: boolean;
@@ -50,17 +49,13 @@ export interface Repository {
   statuses_url: string;
   languages_url: string;
   stargazers_url: string;
+  stargazers_count: number;
   contributors_url: string;
   subscribers_url: string;
   subscription_url: string;
 }
-
-export const fetchRepositories = async (
-  page: number
-): Promise<Repository[]> => {
-  const response = await fetch(
-    `https://api.github.com/search/repositories?q=javascript&sort=stars&order=asc&page=${page}`
-  );
-  const data = await response.json();
-  return data.items;
+export type TResponse = {
+  total_count: number;
+  incomplete_results: boolean;
+  items: Repository[];
 };

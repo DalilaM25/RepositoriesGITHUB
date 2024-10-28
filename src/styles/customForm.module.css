@@ -1,0 +1,11 @@
+.customForm {
+    max-width: 80vw; 
+    min-width: 20vw; 
+}
+
+.buttons{
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    padding-top: 20px;
+}
