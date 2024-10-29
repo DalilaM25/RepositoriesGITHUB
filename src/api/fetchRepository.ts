@@ -1,13 +1,19 @@
 import { TResponse } from "../utils/types";
 
 const token = import.meta.env.VITE_GITHUB_TOKEN;
+const BASE_URL = "https://api.github.com";
 
-export const fetchRepositories = async (page: number): Promise<TResponse> => {
+export const fetchRepositories = async (
+  page: number,
+  filter: string,
+  order: string
+): Promise<TResponse> => {
   return fetch(
-    `https://api.github.com/search/repositories?q=javascript&sort=stars&order=asc&page=${page}`,
+    `${BASE_URL}/search/repositories?q=javascript&sort=${filter}&order=${order}&per_page=10&page=${page}`,
     {
       headers: {
-        Authorization: `token ${token}`,
+        Authorization: `Bearer ${token}`,
+        "X-GitHub-Api-Version": "2022-11-28",
       },
     }
   )

@@ -1,6 +1,6 @@
 import React, { FC, memo } from "react";
 import ReactDOM from "react-dom";
-import styles from "../styles/modal.module.css";
+import styles from "./modal.module.css";
 
 interface ModalProps {
   children: React.ReactNode;

@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { useStores } from "../store/rootStoreContext";
-import { RepoItem } from "./RepoItem";
-import { Modal } from "./Modal";
-import { RepoForm } from "./RepoForm";
-import { Repository } from "../utils/types";
-import { Button, Select, Spin } from "antd";
-import styles from "../styles/reposList.module.css";
+import { useStores } from "../../store/rootStoreContext";
+import { RepositoryCard } from "../repositoryCard/repositoryCard";
+import { Modal } from "../modal/Modal";
+import { RepoForm } from "../repoForm/RepoForm";
+import { Repository } from "../../utils/types";
+import { Button, Spin } from "antd";
+import styles from "./repositoriesList.module.css";
+import { FilterSelect } from "../filterSelect/FilterSelect";
 
-const ReposList: React.FC = observer(() => {
+const RepositoriesList: React.FC = observer(() => {
   const {
     repos: {
       repositories,
@@ -19,7 +20,7 @@ const ReposList: React.FC = observer(() => {
       totalPages,
       removeRepositoryByID,
       filter,
-      setFilter,
+      order,
     },
   } = useStores();
 
@@ -39,15 +40,15 @@ const ReposList: React.FC = observer(() => {
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    getRepositories(filter);
-  }, [filter, getRepositories]);
+    getRepositories();
+  }, [filter, order, getRepositories, page]);
 
   useEffect(() => {
     const handleObserver = (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
       if (target.isIntersecting && !loading && page < totalPages) {
         setPage(page + 1);
-        getRepositories(filter);
+        getRepositories();
       }
     };
 
@@ -69,55 +70,28 @@ const ReposList: React.FC = observer(() => {
         observer.unobserve(currentLoaderRef);
       }
     };
-  }, [filter, getRepositories, loading, page, setPage, totalPages]);
+  }, [filter, order, getRepositories, loading, page, setPage, totalPages]);
 
   return (
     <>
-      <Select
-        defaultValue="name"
-        className={styles.select}
-        onChange={(value) => {
-          setFilter(value);
-          setPage(1);
-        }}
-      >
-        <Select.Option value="name">По имени</Select.Option>
-        <Select.Option value="createdAt">По дате создания</Select.Option>
-        <Select.Option value="updatedAt">
-          По дате последнего изменения
-        </Select.Option>
-      </Select>
+      <FilterSelect />
       <div>
         {repositories.map((repo) => (
-          <div
-            key={repo.id}
-            style={{
-              position: "relative",
-              marginBottom: "16px",
-              padding: "16px",
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <RepoItem repo={repo} />
+          <div className={styles.repo} key={repo.id}>
+            <RepositoryCard repo={repo} />
             <div className={styles.buttonContainer}>
               <Button
+                className={styles.buttonEdit}
                 onClick={() => handleOpenModal(repo)}
                 type="primary"
                 icon={
                   <span role="img" aria-label="edit">
-                    🖌
+                    ✏️
                   </span>
                 }
-                style={{
-                  position: "absolute",
-                  top: "5px",
-                  right: "40px",
-                  margin: 0,
-                }}
               />
               <Button
+                className={styles.buttonX}
                 onClick={() => removeRepositoryByID(repo.id)}
                 danger
                 icon={
@@ -125,12 +99,6 @@ const ReposList: React.FC = observer(() => {
                     X
                   </span>
                 }
-                style={{
-                  position: "absolute",
-                  top: "5px",
-                  right: "5px",
-                  margin: 0,
-                }}
               />
             </div>
           </div>
@@ -148,4 +116,4 @@ const ReposList: React.FC = observer(() => {
   );
 });
 
-export default ReposList;
+export default RepositoriesList;

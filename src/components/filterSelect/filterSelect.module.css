@@ -1,0 +1,9 @@
+.select {
+    position: fixed;
+    top: 76px;
+    right: 15px;
+    z-index: 1000; 
+    width: 10vw;
+   }
+
+  

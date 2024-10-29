@@ -8,13 +8,14 @@ class RepositoryStore {
   loading: boolean = false;
   err: string | null = null;
   totalPages: number = 0;
-  filter: string = "name";
+  filter: string = "stars";
+  order: string = "asc";
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  getRepositories = async (filter: string) => {
+  getRepositories = async () => {
     this.loading = true;
     this.err = null;
 
@@ -22,11 +23,10 @@ class RepositoryStore {
       if (this.page === 1) {
         this.repositories = [];
       }
-      const data = await fetchRepositories(this.page);
-      const filteredItems = this.applyFilter(data.items, filter);
+      const data = await fetchRepositories(this.page, this.filter, this.order);
 
       runInAction(() => {
-        this.repositories.push(...filteredItems);
+        this.repositories.push(...data.items);
         this.totalPages = data.total_count;
         this.loading = false;
       });
@@ -39,31 +39,16 @@ class RepositoryStore {
     }
   };
 
-  applyFilter(repositories: Repository[], filter: string): Repository[] {
-    return repositories.sort((a, b) => {
-      switch (filter) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "createdAt":
-          return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
-        case "updatedAt":
-          return (
-            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-          );
-        default:
-          return 0;
-      }
-    });
-  }
-
   setPage = (page: number) => {
     this.page = page;
   };
 
   setFilter = (filter: string) => {
     this.filter = filter;
+  };
+
+  setOrder = (order: string) => {
+    this.order = order;
   };
 
   removeRepositoryByID = (repoID: number) => {

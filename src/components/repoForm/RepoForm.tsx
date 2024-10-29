@@ -1,9 +1,9 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import { observer } from "mobx-react-lite";
-import { useStores } from "../store/rootStoreContext";
-import { Repository } from "../utils/types";
-import styles from "../styles/customForm.module.css";
+import { useStores } from "../../store/rootStoreContext";
+import { Repository } from "../../utils/types";
+import styles from "./repoForm.module.css";
 interface RepoFormProps {
   repo: Repository;
   onClose: () => void;
