@@ -38,7 +38,6 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = observer(
     return (
       <Card className={styles.card}>
         <Card.Meta
-          className={styles.customMeta}
           avatar={
             <Avatar
               className={styles.avatar}
@@ -48,7 +47,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = observer(
           }
           title={<span className={styles.username}>{owner.login}</span>}
           description={
-            <>
+            <div className={styles.customMeta}>
               <Title level={4}>
                 {name} ⭐️: {stargazers_count}
               </Title>
@@ -70,7 +69,7 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = observer(
               <Paragraph className={styles.text}>
                 Дата последнего изменения: {formattedUpdatedDate}
               </Paragraph>
-            </>
+            </div>
           }
         />
       </Card>
