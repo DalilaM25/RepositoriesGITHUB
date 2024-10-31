@@ -1,4 +1,3 @@
-import React from "react";
 import { Form, Input, Button } from "antd";
 import { observer } from "mobx-react-lite";
 import { useStores } from "../../store/rootStoreContext";

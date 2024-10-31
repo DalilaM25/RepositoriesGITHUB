@@ -77,3 +77,4 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = observer(
     );
   }
 );
+

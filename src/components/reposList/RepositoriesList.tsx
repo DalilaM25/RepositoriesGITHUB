@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useStores } from "../../store/rootStoreContext";
-import { RepositoryCard } from "../repositoryCard/repositoryCard";
+import { RepositoryCard } from "../repositoryCard/RepositoryCard";
 import { Modal } from "../modal/Modal";
 import { RepoForm } from "../repoForm/RepoForm";
 import { Repository } from "../../utils/types";
@@ -110,8 +110,8 @@ const RepositoriesList: React.FC = observer(() => {
           <RepoForm repo={currentRepo} onClose={handleCloseModal} />
         </Modal>
       )}
-      {loading && <Spin tip="Загрузка..." />}
-      <div ref={loaderRef} style={{ height: "20px" }} />
+      {loading && <Spin data-testid="spin" tip="Загрузка..." />}
+      <div data-testid="loaderRef" ref={loaderRef} style={{ height: "20px" }} />
     </>
   );
 });

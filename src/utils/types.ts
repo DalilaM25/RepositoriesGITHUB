@@ -1,6 +1,5 @@
 export interface Owner {
   login: string;
-  id: number;
   avatar_url: string;
 }
 
@@ -12,7 +11,6 @@ export interface Repository {
   description: string | null;
   forks_count: number;
   stargazers_count: number;
-  url: string;
   created_at: string;
   updated_at: string;
 }
